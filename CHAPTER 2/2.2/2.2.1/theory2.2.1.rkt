@@ -23,7 +23,7 @@
       (cons (car list1) (append (cdr list1) list2))))
 
 (define (last-pair items)
-  (list-ref items (- (length items) 1)))
+  (list (list-ref items (- (length items) 1))))
 
 (define (reverse items)
   (define (reversei rlist len)
