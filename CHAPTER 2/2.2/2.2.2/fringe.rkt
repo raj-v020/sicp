@@ -11,5 +11,4 @@
                                 (list (car items)))
                             (fringe (cdr items)))
       items))
-(fringe l1)
-(fringe (list x x))
+(fringe (list 1 (list 2 (list 3 4)) 5))
