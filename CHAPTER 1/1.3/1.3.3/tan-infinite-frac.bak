@@ -1,8 +1,0 @@
-#lang sicp
-(define (df i) (cond ((divisibleby3? (- i 2)) (* 2 (+ 1 (/ (- i 2) 3))))
-                     (else 1)))
-
-(define (cont-frac n d k)
-  (define (cont-frac-iter res m)
-    (if (= m 0) res (cont-frac-iter (/ (n m) (+ (d m) res)) (- m 1))))
-  (cont-frac-iter (/ (n k) (d k)) (- k 1)))
