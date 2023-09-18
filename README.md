@@ -1,1 +1,1 @@
-# All Sicp exercises and codes (NOT YET)
+# All SICP exercises and codes (NOT YET)
