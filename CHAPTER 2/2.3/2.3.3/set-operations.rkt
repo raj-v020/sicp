@@ -1,0 +1,31 @@
+#lang scheme
+(define (equal? item1 item2)
+  (if (and (pair? item1)
+           (pair? item2))
+      (and (equal? (car item1) (car item2))
+           (equal? (cdr item1) (cdr item2)))
+      (eq? item1 item2)))
+(define (element-of-set? x set)
+  (cond ((null? set) false)
+        ((equal? x (car set)) true)
+        (else (element-of-set? x (cdr set)))))
+(define (adjoin-set x set)
+  (if (element-of-set? x set)
+      set
+      (cons x set)))
+
+(define (intersection-set set1 set2)
+  (cond ((or (null? set1) (null? set2)) '())
+        ((element-of-set? (car set1) set2)
+         (cons (car set1) (intersection-set (cdr set1) set2)))
+        (else (intersection-set (cdr set1) set2))))
+
+(define (union-set set1 set2)
+  (cond ((or (null? set1) (null? set2)) (if (null? set1) set2 set1))
+        ((and (null? set1) (null? set2)) '())
+        ((element-of-set? (car set1) set2)
+         (union-set (cdr set1) set2))
+        (else (union-set (cdr set1) (adjoin-set (car set1) set2)))))
+
+(union-set '(1 2 3 4 6) '(2 4 7 8 9))
+(intersection-set '(1 2 3 4 6) '(2 4 7 8 9))
