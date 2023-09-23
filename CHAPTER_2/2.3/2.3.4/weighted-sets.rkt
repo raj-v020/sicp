@@ -1,4 +1,5 @@
 #lang scheme
+(require "huffman-representation.rkt")
 
 (define (adjoin-set x set)
   (cond ((null? set) (list x))
