@@ -5,6 +5,7 @@
 
 (define (=number? exp num) (and (number? exp) (= exp num)))
 
+
 (define (make-sum a1 a2)
   (cond ((=number? a1 0) a2)
         ((=number? a2 0) a1)
