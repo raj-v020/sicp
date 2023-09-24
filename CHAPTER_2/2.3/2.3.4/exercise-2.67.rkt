@@ -12,6 +12,6 @@
 
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
-(decode sample-message sample-tree)
+;(decode sample-message sample-tree)
 ; (A D A B B C A)
 (provide (all-defined-out))

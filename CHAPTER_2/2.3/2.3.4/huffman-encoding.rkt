@@ -21,6 +21,6 @@
          (cons 1 (encode-symbol symbol (right-branch tree))))
         (else (error "symbol not in tree: ENCODE-SYMBOL" symbol))))
 
-(encode '(A D A B B C A) sample-tree)
+;(encode '(A D A B B C A) sample-tree)
 
 (provide (all-defined-out))
