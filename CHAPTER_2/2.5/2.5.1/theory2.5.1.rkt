@@ -203,4 +203,13 @@
 (install-rational-package)
 (install-scheme-number-package)
 
+<<<<<<< HEAD
 (provide (all-defined-out))
+=======
+(define z1 (make-complex-from-real-imag 3 4))
+(define z2 (make-complex-from-real-imag 0 0))
+(define x (make-rational 3 4))
+(define y (make-rational 0 2))
+
+(=zero? z2)
+>>>>>>> 67d28b26f34ef7b26dd35919e711d40660f0cf93
