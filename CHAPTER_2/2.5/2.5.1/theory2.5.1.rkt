@@ -202,5 +202,3 @@
 (install-complex-package)
 (install-rational-package)
 (install-scheme-number-package)
-
-(provide (all-defined-out))
