@@ -1,3 +1,4 @@
 # Racket
 *.bak
 conjure*.rkt
+*~
