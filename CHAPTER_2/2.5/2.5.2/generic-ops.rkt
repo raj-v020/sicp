@@ -18,14 +18,11 @@
 
 (define (member? item x)
   (cond ((null? x) false)
-<<<<<<< HEAD
-=======
         ((eq? item (car x)) x)
         (else (memq item (cdr x)))))
 
 (define (member? item x)
   (cond ((null? x) false)
->>>>>>> d8034cc (Added drop procedure and edited apply-generic procedure in generic-ops.rkt)
         ((eq? item (car x)) #t)
         (else (member? item (cdr x)))))
 
@@ -268,7 +265,7 @@
       (cond ((higher? lower-type higher-type) #f)
             ((eq? lower-type higher-type) (lambda (x) x))
             (else (repeated raise height-diff)))))
-  
+
   (define (coerce-type type type-tags)
     (define (iter tags coerced-types)
       (cond ((null? tags) coerced-types)
