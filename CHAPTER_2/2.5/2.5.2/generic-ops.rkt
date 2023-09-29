@@ -18,6 +18,14 @@
 
 (define (member? item x)
   (cond ((null? x) false)
+<<<<<<< HEAD
+=======
+        ((eq? item (car x)) x)
+        (else (memq item (cdr x)))))
+
+(define (member? item x)
+  (cond ((null? x) false)
+>>>>>>> d8034cc27ef8ae9df97a634b574cde14b9a39855
         ((eq? item (car x)) #t)
         (else (member? item (cdr x)))))
 
