@@ -1,8 +1,8 @@
 #lang scheme
 
-(define *the-table* (make-hash));make THE table
-(define (put key1 key2 value) (hash-set! *the-table* (list key1 key2) value));put
-(define (get key1 key2) (hash-ref *the-table* (list key1 key2) #f));get
+(define *the-table* (make-hash))
+(define (put key1 key2 value) (hash-set! *the-table* (list key1 key2) value))
+(define (get key1 key2) (hash-ref *the-table* (list key1 key2) #f))
 
 (define (square x) (* x x))
 (define (list-ref x items)
@@ -20,7 +20,14 @@
   (cond ((null? x) false)
         ((eq? item (car x)) x)
         (else (memq item (cdr x)))))
-(define tower (list 'integer 'rational 'real 'complex))
+
+(define (member? item x)
+  (cond ((null? x) false)
+        ((eq? item (car x)) #t)
+        (else (member? item (cdr x)))))
+
+(define tower '(integer rational real complex))
+(define operations '(add sub mul div))
 
 (define (attach-tag type-tag contents)
   (cons type-tag contents))
@@ -38,7 +45,6 @@
          (error "Bad tagged datum: CONTENTS" datum))))
 
 (define (install-rectangular-package)
-  ;; internal procedures
   (define (real-part z) (car z))
   (define (imag-part z) (cdr z))
   (define (make-from-real-imag x y) (cons x y))
@@ -49,7 +55,6 @@
     (atan (imag-part z) (real-part z)))
   (define (make-from-mag-ang r a)
     (cons (* r (cos a)) (* r (sin a))))
-  ;; interface to the rest of the system
   (define (tag x) (attach-tag 'rectangular x))
   (put 'real-part '(rectangular) real-part)
   (put 'imag-part '(rectangular) imag-part)
@@ -62,7 +67,6 @@
   'done)
 
 (define (install-polar-package)
-  ;; internal procedures
   (define (magnitude z) (car z))
   (define (angle z) (cdr z))
   (define (make-from-mag-ang r a) (cons r a))
@@ -71,7 +75,6 @@
   (define (make-from-real-imag x y)
     (cons (sqrt (+ (square x) (square y)))
           (atan y x)))
-  ;; interface to the rest of the system
   (define (tag x) (attach-tag 'polar x))
   (put 'real-part '(polar) real-part)
   (put 'imag-part '(polar) imag-part)
@@ -103,12 +106,15 @@
 (define (install-scheme-number-package)
   (define (raise-integer n)
     (make-rational n 1))
+  (define (project-integer n)
+    n)
   (put 'add '(integer integer) +)
   (put 'sub '(integer integer) -)
   (put 'mul '(integer integer) *)
   (put 'div '(integer integer) /)
   (put 'raise '(integer) raise-integer)
-  (put 'equal? '(integer integer) equal?)
+  (put 'project '(integer) project-integer)
+  (put 'equal? '(integer integer) =)
   (put '=zero? '(integer) zero?)
   'done)
 
@@ -141,6 +147,8 @@
          (not (= (denom x) 0))))
   (define (raise-rational x)
     (make-real (/ (numer x) (denom x))))
+  (define (project-rational x)
+    (numer x))
 
   (put 'add '(rational rational)
        (lambda (x y) (tag (add-rat x y))))
@@ -155,6 +163,7 @@
   (put 'numer '(rational) numer)
   (put 'denom '(rational) denom)
   (put 'raise '(rational) raise-rational)
+  (put 'project '(rational) project-rational)
   (put 'equal? '(rational rational) equal-rational?)
   (put '=zero? '(rational) =zero?)
   'done)
@@ -170,8 +179,13 @@
   (define (tag x) (attach-tag 'real x))
   (define (raise-real x)
     (make-complex-from-real-imag (contents x) 0))
+  (define (project-real x)
+    (round x))
   (put 'make 'real (lambda (x) (tag (* 1.0 x))))
+  (put 'equal? '(real real) (lambda (x y) (= x y)))
+  (put '=zero? '(real) (lambda (x) (= x 0)))
   (put 'raise '(real) raise-real)
+  (put 'project '(real) project-real)
   'done)
 
 (define (make-real x)
@@ -201,6 +215,8 @@
     (= (magnitude z) 0))
   (define (raise-complex z)
     (tag z))
+  (define (project-complex z)
+    (make-real (real-part z)))
   (define (tag z) (attach-tag 'complex z))
   (put 'add '(complex complex)
        (lambda (z1 z2) (tag (add-complex z1 z2))))
@@ -219,14 +235,15 @@
   (put 'magnitude '(complex) magnitude)
   (put 'angle '(complex) angle)
   (put 'raise '(complex) raise-complex)
+  (put 'project '(complex) project-complex)
   (put 'equal? '(complex complex) equal-complex?)
   (put '=zero? '(complex) =zero?)
   'done)
 
 (define (make-complex-from-real-imag x y)
-  ((get 'make-from-real-imag 'complex) x y))
+  ((get 'make-from-real-imag 'complex) (* 1.0 x) (* 1.0 y)))
 (define (make-complex-from-mag-ang r a)
-  ((get 'make-from-mag-ang 'complex) r a))
+  ((get 'make-from-mag-ang 'complex) (* 1.0 r) (* 1.0 a)))
 
 (install-rectangular-package)
 (install-polar-package)
@@ -235,13 +252,19 @@
 (install-real-package)
 (install-scheme-number-package)
 
-(define *table-2* (make-hash));make THE table
-(define (put-coercion key1 key2 value) (hash-set! *table-2* (list key1 key2) value));put
-(define (get-coercion key1 key2) (hash-ref *table-2* (list key1 key2) #f));get
+(define *table-2* (make-hash))
+(define (put-coercion key1 key2 value) (hash-set! *table-2* (list key1 key2) value))
+(define (get-coercion key1 key2) (hash-ref *table-2* (list key1 key2) #f))
 
 (define (apply-generic op . args)
   (define (show-error type-tags)
     (error "No method for these types" (list op type-tags)))
+
+  (define (successive-raise lower-type higher-type)
+    (let ((height-diff (- (list-ref higher-type tower) (list-ref lower-type tower))))
+      (cond ((higher? lower-type higher-type) #f)
+            ((eq? lower-type higher-type) (lambda (x) x))
+            (else (repeated raise height-diff)))))
   
   (define (coerce-type type type-tags)
     (define (iter tags coerced-types)
@@ -259,22 +282,39 @@
             (else (iter (cdr current-type)))))
     (iter type-tags))
 
+  (define (coerced? type-tags)
+    (define (iter first-type tags)
+      (cond ((null? tags) #t)
+            ((eq? first-type (car tags)) (iter first-type (cdr tags)))
+            (else #f)))
+    (iter (car type-tags) (cdr type-tags)))
+
   (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
       (if proc
-          (apply proc (map contents args))
-          (let ((coerced-args (coerce-args type-tags)))
-            (if coerced-args
-                (apply apply-generic (append (list op) coerced-args))
-                (show-error type-tags)))))))
+          (if (member? op operations)
+              (drop (apply proc (map contents args)))
+              (apply proc (map contents args)))
+          (if (not (coerced? type-tags))
+              (let ((coerced-args (coerce-args type-tags)))
+                (if coerced-args
+                    (apply apply-generic (append (list op) coerced-args))
+                    (show-error type-tags)))
+              (show-error type-tags))))))
 
 (define (higher? x y)
   (if (> (list-ref x tower) (list-ref y tower)) #t #f))
+
 (define (raise num)
   (apply-generic 'raise num))
-        
-
-(define (exp x y) (apply-generic 'exp x y))
+(define (project num)
+  (apply-generic 'project num))
+(define (drop num)
+  (if (eq? (type-tag num) 'integer) num
+      (let ((raised-project-num (raise (project num))))
+        (if (equ? num raised-project-num)
+            (drop (project num))
+            num))))
 
 (define (map-list l1 l2)
   (if (null? l1) '() (cons (list (car l1) (car l2)) (map-list (cdr l1) (cdr l2)))))
@@ -283,14 +323,7 @@
   (map (lambda (sub-l)
          (apply (car sub-l) (cdr sub-l))) l))
 
-(define (successive-raise lower-type higher-type)
-  (let ((height-diff (- (list-ref higher-type tower) (list-ref lower-type tower))))
-    (cond ((higher? lower-type higher-type) #f)
-          ((eq? lower-type higher-type) (lambda (x) x))
-          (else (lambda (x) (repeated raise height-diff))))))
-        
-
 (define z1 (make-complex-from-real-imag 3 4))
-(define z2 (make-complex-from-real-imag 5 2))
-(define x (make-rational 1 2))
-((successive-raise 'integer 'complex) 2)
+(define z2 (make-complex-from-real-imag 2 -4))
+(define x (make-rational 1 3))
+(add z1 z2)
