@@ -18,6 +18,14 @@
 
 (define (member? item x)
   (cond ((null? x) false)
+<<<<<<< HEAD
+=======
+        ((eq? item (car x)) x)
+        (else (memq item (cdr x)))))
+
+(define (member? item x)
+  (cond ((null? x) false)
+>>>>>>> d8034cc (Added drop procedure and edited apply-generic procedure in generic-ops.rkt)
         ((eq? item (car x)) #t)
         (else (member? item (cdr x)))))
 
