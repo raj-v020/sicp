@@ -1,3 +1,6 @@
 *.bak
 conjure*.rkt
 *~
+#*
+*.dep
+*.zo
