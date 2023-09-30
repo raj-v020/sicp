@@ -67,6 +67,8 @@
   (put 'imag-part '(rectangular) imag-part)
   (put 'magnitude '(rectangular) magnitude)
   (put 'angle '(rectangular) angle)
+  (put 'negation '(rectangular) (lambda (z) (tag (make-from-real-imag (- (real-part z))
+                                                                      (- (imag-part z))))))
   (put 'make-from-real-imag 'rectangular
        (lambda (x y) (tag (make-from-real-imag x y))))
   (put 'make-from-mag-ang 'rectangular
@@ -87,6 +89,8 @@
   (put 'imag-part '(polar) imag-part)
   (put 'magnitude '(polar) magnitude)
   (put 'angle '(polar) angle)
+  (put 'negation '(polar) (lambda (z) (tag (make-from-mag-ang (- (magnitude z))
+                                                              (angle z)))))
   (put 'make-from-real-imag 'polar
        (lambda (x y) (tag (make-from-real-imag x y))))
   (put 'make-from-mag-ang 'polar
@@ -119,6 +123,7 @@
   (put 'sub '(integer integer) -)
   (put 'mul '(integer integer) *)
   (put 'div '(integer integer) /)
+  (put 'negation '(integer) -)
   (put 'raise '(integer) raise-integer)
   (put 'project '(integer) project-integer)
   (put 'equal? '(integer integer) =)
@@ -192,6 +197,7 @@
   (put 'sub '(real real) -)
   (put 'mul '(real real) *)
   (put 'div '(real real) /)
+  (put 'negation '(real) -)
   (put 'make 'real (lambda (x) (tag (* 1.0 x))))
   (put 'equal? '(real real) (lambda (x y) (= x y)))
   (put '=zero? '(real) (lambda (x) (= x 0)))
@@ -247,6 +253,7 @@
   (put 'angle '(complex) angle)
   (put 'raise '(complex) raise-complex)
   (put 'project '(complex) project-complex)
+  (put 'negation '(complex) (lambda (z) (tag (apply-generic 'negation z))))
   (put 'equal? '(complex complex) equal-complex?)
   (put '=zero? '(complex) =zero?)
   'done)
