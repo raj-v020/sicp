@@ -1,0 +1,40 @@
+#lang scheme
+
+(define (make-account balance password)
+  (define incorrect-attempts 0)
+  (define (monitor-attempts arg)
+    (cond ((eq? arg 'how-many-attempts?) incorrect-attempts)
+          ((eq? arg 'reset-attempts) (set! incorrect-attempts 0))
+          ((eq? arg 'add-attempts) (set! incorrect-attempts (+ incorrect-attempts 1)))))
+
+  (define (withdraw amount)
+      (if (>= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+
+  (define (deposit amount)
+      (begin (set! balance (+ balance amount))
+             balance))
+
+  (define (dispatch p m)
+    (cond ((not (eq? p password)) (begin (monitor-attempts 'add-attempts)
+                                         (if (= (monitor-attempts 'how-many-attempts?) 8) 
+                                           (lambda (x) "Calling Cops")
+                                           (lambda (x) "Incorrect Password"))))
+          ((eq? m 'withdraw) (begin (monitor-attempts 'reset-attempts) withdraw))
+          ((eq? m 'deposit) (begin (monitor-attempts 'reset-attempts) deposit))
+          (else (error "Unknown request: MAKE-ACCOUNT"
+                       m))))
+  dispatch)
+
+  (define acc (make-account 100 'secret-password))
+  ((acc 'secret-password 'withdraw) 40)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
+  ((acc 'some-other-password 'deposit) 50)
