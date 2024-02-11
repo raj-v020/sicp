@@ -1,0 +1,46 @@
+#lang sicp
+
+(define (last-pair x)
+  (if (null? (cdr x)) x (last-pair (cdr x))))
+
+(define (append! x y)
+  (set-cdr! (last-pair x) y)
+  x)
+
+(define (make-cycle x)
+  (set-cdr! (last-pair x) x)
+  x)
+
+(define (is-cyclic? l)
+  (define counted-pairs '())
+  (define (helper x)
+    (cond ((null? x) #f)
+          ((not (pair? x)) #f)
+          ((eq? (car x) (cdr x)) (begin (set! counted-pairs (cons x counted-pairs)) (helper (cdr x))))
+          ((or (memq (car x) counted-pairs) (memq (cdr x) counted-pairs)) #t)
+          (else (begin (set! counted-pairs (cons x counted-pairs)) (or (helper (car x)) (helper (cdr x)))))))
+    (helper l))
+
+(define l '(a b c))
+(define l1 '(a b c))
+(define l2 '(a d b c))
+(set-cdr! (cddr l) l)
+(set-cdr! (cddr l1) (cdr l1))
+(set-car! (cdr l2) (cddr l2))
+(set-cdr! (cdddr l2) l2)
+
+(define x3 '(a b c))
+(define m '(a))
+(define n (cons m m))
+(define x7 (cons n n))
+(define x4 (cons 'a n))
+(define o (cons 'a m))
+(define x5 (cons o o))
+
+(is-cyclic? l)
+(is-cyclic? l1)
+(is-cyclic? l2)
+(is-cyclic? x3)
+(is-cyclic? x4)
+(is-cyclic? x7)
+(is-cyclic? x5)
