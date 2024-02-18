@@ -10,10 +10,15 @@
     )    
   (iter 1))
 
+(define (display-space n)
+  (cond ((= n 0) (display ""))
+        (else (display " ") (display-space (- n 1)))))
+
 (define (display-pascal a)
   (define (iter n)
+    (display-space (- a n))
     (layer n)
-    (if (> n a) (newline) (iter (+ n 1))))
+    (if (>= n a) (newline) (iter (+ n 1))))
   (iter 1))
 
 (display-pascal 10)
