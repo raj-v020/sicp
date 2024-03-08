@@ -58,4 +58,4 @@
 (put '(layer-1 layer-2 characters 1) '!)
 (put '(layer-1 layer-2 characters 2) '$)
 (put '(layer-1 layer-2 layer-3 numbers 1) 1)
-(get '(layer-1 layer-2 layer-3 numbers 1))
+(get '(layer-1 layer-2 letters 3))

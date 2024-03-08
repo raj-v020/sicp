@@ -1,6 +1,6 @@
 #lang scheme
-(require "list-to-tree.rkt")
-(require "tree-to-list.rkt")
+(require "list-to-tree.scm")
+(require "tree-to-list.scm")
 
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))
@@ -58,5 +58,5 @@
 (define tree1 (list->tree list1))
 (define tree2 (list->tree list2))
 
-(tree->list-2 (union-set tree1 tree2))
+(tree->list-2 (intersection-set tree1 tree2))
 (provide (all-defined-out)) 
