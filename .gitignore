@@ -2,5 +2,6 @@
 conjure*.rkt
 *~
 #*
+*#
 *.dep
 *.zo
