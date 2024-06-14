@@ -300,7 +300,7 @@
         (cons (cadar bindings) (iter (cdr bindings)))))
   (iter (let-bindings exp)))
 (define (make-let bindings body)
-  (append (list 'let bindings) body))
+  (cons 'let (cons bindings body)))
 
 (define (let->combination exp)
   (if (not (null? (cdr exp)))
@@ -316,9 +316,12 @@
 (define (make-nested-lets bindings body)
   (if (null? bindings)
       body
-        (make-let (list (car bindings))
-                  (make-nested-lets (cdr bindings)
-                                    body))))
+      (make-let (list (car bindings))
+                (let ((res (make-nested-lets (cdr bindings)
+                                             body)))
+                  (if (let? res)
+                      (list res)
+                      res)))))
 
 (define (scan-out-defines proc-body)
   (define (seperate-def-acts body defs)
